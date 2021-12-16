@@ -48,6 +48,14 @@ namespace jobapp.Controllers
         {
             return View();
         }
+        // GET: Keys/UpdateItem
+        [HttpPost]
+        public async Task<IActionResult> updateItem([FromBody]Key key)
+        {
+            _context.Update(key);
+            await _context.SaveChangesAsync();
+            return Json(new { result = "success" });
+        }
 
         // POST: Keys/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.

@@ -22,18 +22,19 @@
                 @Html.DisplayNameFor(model => model.Price)
             </th>
             <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
+            <td id = "nameItem_@Html.DisplayFor(modelItem => item.Id)"> 
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
-            <td>
+            <td id = "descItem_@Html.DisplayFor(modelItem => item.Id)"> 
                 @Html.DisplayFor(modelItem => item.Desc)
             </td>
-            <td>
+            <td id = "priceItem_@Html.DisplayFor(modelItem => item.Id)"> 
                 @Html.DisplayFor(modelItem => item.Price)
             </td>
             <td>
@@ -41,7 +42,37 @@
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
+            <td><input class="btn btn-primary pricebtn" name="submitButton" id= "priceItemBtn_@Html.DisplayFor(modelItem => item.Id)" value="Increase Price $1" type="button"></td>
         </tr>
 }
     </tbody>
 </table>
+
+<script type="text/javascript">  
+        $(".pricebtn").click(function () {  
+            var id = $(this).attr("id");
+            id = id.replace('priceItemBtn_','');
+            let Keyprice = $("#priceItem_" +id).text();
+            Keyprice++;
+            let Keyname = $("#nameItem_" +id).text();
+            let Keydesc = $("#descItem_" +id).text();
+            id = parseInt(id);
+            Keyname = Keyname.trim();
+            Keydesc = Keydesc.trim();
+            console.log(Keyprice);
+            console.log(Keyname);
+            console.log(Keydesc);
+
+            $.ajax({  
+                type: "POST",  
+                url: '@Url.Action("updateItem")',  
+                data: JSON.stringify({'Id': id,'Name': Keyname, 'Desc': Keydesc,'Price': Keyprice}),  
+                dataType: "json",  
+                contentType: "application/json; charset=utf-8",  
+                success: function () {  
+                    $("#priceItem_" + id).text((Math.round(Keyprice * 100) / 100).toFixed(2));
+                } 
+            });  
+            return false;  
+        });
+    </script>
